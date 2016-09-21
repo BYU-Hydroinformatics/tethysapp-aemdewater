@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 import json
 import numpy as np
-import math
+
 
 from tethys_sdk.gizmos import *
 
@@ -27,7 +27,7 @@ def home(request):
 
     # Define drawing options
     drawing_options = MVDraw(
-        controls=['Delete', 'Move', 'Point', 'Box', 'Polygon'],
+        controls=['Delete', 'Move', 'Point', 'Box', 'Polygon', 'LineString'],
         initial='Box',
         output_format='WKT'
     )
@@ -107,7 +107,7 @@ def home(request):
 def generate_water_table(request):
 
     #set module paths for timml repository
-    sys.path.append("/home/jacobbf1/tethysdev/tethysapp-aemdewater/tethysapp/aemdewater/aem")
+    sys.path.append("/home/jacobbf1/tethysdev/tethysapp-aemdewater/tethysapp/aemdewater/timml")
     sys.path.append("/usr/local/lib/python2.7/dist-packages")
     sys.path.append("/usr/lib/python2.7/dist-packages")
 
@@ -169,31 +169,6 @@ def generate_water_table(request):
 
     root.destroy()
 
-    print "TimML generated heads"
-
-    print ml.head(0,wXCoords[0]-cellSide,wYCoords[0]+cellSide)
-    print ml.head(0,wXCoords[0],wYCoords[0]+cellSide)
-    print ml.head(0,wXCoords[0]+cellSide,wYCoords[0]+cellSide)
-    print ml.head(0,wXCoords[0]-cellSide,wYCoords[0])
-    print ml.head(0,wXCoords[0],wYCoords[0])
-    print ml.head(0,wXCoords[0]+cellSide,wYCoords[0])
-    print ml.head(0,wXCoords[0]-cellSide,wYCoords[0]-cellSide)
-    print ml.head(0,wXCoords[0],wYCoords[0]-cellSide)
-    print ml.head(0,wXCoords[0]+cellSide,wYCoords[0]-cellSide)
-
-    print " "
-
-    print "EQN generated heads"
-
-    print elevationCalc(wXCoords[0]-cellSide,wYCoords[0]+cellSide,wXCoords,wYCoords,cellSide,initial,bedrock,q,k)
-    print elevationCalc(wXCoords[0],wYCoords[0]+cellSide,wXCoords,wYCoords,cellSide,initial,bedrock,q,k)
-    print elevationCalc(wXCoords[0]+cellSide,wYCoords[0]+cellSide,wXCoords,wYCoords,cellSide,initial,bedrock,q,k)
-    print elevationCalc(wXCoords[0]-cellSide,wYCoords[0],wXCoords,wYCoords,cellSide,initial,bedrock,q,k)
-    print elevationCalc(wXCoords[0],wYCoords[0],wXCoords,wYCoords,cellSide,initial,bedrock,q,k)
-    print elevationCalc(wXCoords[0]+cellSide,wYCoords[0],wXCoords,wYCoords,cellSide,initial,bedrock,q,k)
-    print elevationCalc(wXCoords[0]-cellSide,wYCoords[0]-cellSide,wXCoords,wYCoords,cellSide,initial,bedrock,q,k)
-    print elevationCalc(wXCoords[0],wYCoords[0]-cellSide,wXCoords,wYCoords,cellSide,initial,bedrock,q,k)
-    print elevationCalc(wXCoords[0]+cellSide,wYCoords[0]-cellSide,wXCoords,wYCoords,cellSide,initial,bedrock,q,k)
 
     # try:
     #     count = 0
@@ -223,13 +198,9 @@ def generate_water_table(request):
                                    ]
                     },
                     'properties': {
-                        # 'elevation' : elevationCalc(long,lat,wXCoords,wYCoords,cellSide,initial,bedrock,q,k),
                         'elevation' : ml.head(0,(long+cellSide/2),(lat+cellSide/2)),
                     }
             })
-            # if (wXCoords[0]-cellSide < long < wXCoords[0]+cellSide):
-            #     if (wYCoords[0]-cellSide < lat < wYCoords[0]+cellSide):
-            #         print elevationCalc(long,lat,wXCoords,wYCoords,cellSide,initial,bedrock,q,k)
 
     return JsonResponse({
         "sucess": "Data analysis complete!",
@@ -237,41 +208,6 @@ def generate_water_table(request):
     })
 
 
-# Assign elevations to raster grid
-def elevationCalc (long, lat, wXCoords,wYCoords,cellSide, initial, bedrock, q, k):
-    H = initial - bedrock
-
-    i = 0
-    sum = 0.0
-    minr = 0.05
-
-    while (i < len(wXCoords)):
-
-        wellx = wXCoords[i]
-        welly = wYCoords[i]
-        Q = q/len(wXCoords)
-
-        deltax = abs(long+cellSide/2-wellx)
-        deltay = abs(lat+cellSide/2-welly)
-
-        wellr = pow((pow(deltax,2) + pow(deltay,2)),0.5)
-
-        #Make sure that we don't create a complex value for the water table elevation
-        #(Previous Trial) math.exp(math.log(500)-math.pi*k*pow(H,2)/Q)
-        if (wellr < minr):
-            wellr = minr
-            sum = sum + Q*math.log(500/wellr)
-
-        elif (math.log(500/wellr)<0):
-            sum = sum
-
-        else:
-            sum = sum + Q*math.log(500/wellr)
-        i = i+1
-
-    wtElevation = math.pow(abs(math.pow(H,2) - sum/(math.pi*k)),0.5) + bedrock
-    # print wtElevation # for debugging purposes
-    return (round(wtElevation, 2))
 
 
 
