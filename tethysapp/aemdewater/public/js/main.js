@@ -258,7 +258,9 @@ function dewater(){
 						'features': waterTableRegional
 					};
 
-					contours = (JSON.parse(data.contours));
+					levels = (JSON.parse(data.heads));
+
+					Contours = (JSON.parse(data.contours));
 					var contourLines = {
 						'type': 'FeatureCollection',
 						'crs': {
@@ -266,18 +268,57 @@ function dewater(){
 							'properties': {
 								'name':'EPSG:4326'
 							}
-						}
-						'features': contours
+						},
+						'features': Contours
 					}
 
 					addWaterTable(raster_elev_mapView,"Water Table");
 					addDewateredLayer(raster_elev_mapView,"Dewatered Region(s)");
-					addContours(contourLines, "Elevation Contours");
+					addContours(contourLines,levels,"Elevation Contours");
 					}
 			});
 };
 //  #################################### Add the new water table contours to the map ###################################
-function addContours(contourLines,titleName){
+function addContours(contourLines,levels,titleName){
+
+    getStyleColor = function(value) {
+        if (value = levels[0])
+            return (165,42,42,1);		//	Brown, Hex:#A52A2A
+        else if (value = levels[1])
+            return [191,0,23, 1];		//	Red, Hex:BF0017
+        else if (value = levels[2])
+            return [196,87,0,1];		//	Orange, Hex:C45700
+        else if (value = levels[3])
+            return [255,165,0,1];		//	Light Orange, Hex:ffa500
+        else if (value = levels[4])
+            return [255,255,0,1];		//	Yellow, Hex:FFFF00
+        else if (value = levels[5])
+            return [0,255,0,1];			//	Green
+        else if (value = levels[6])
+            return [0,218,157,1];		//	Turqoise(ish), Hex:00DA9D
+        else if (value = levels[7])
+            return [0,158,223,1];		//	Lighter Blue, Hex:009EDF
+        else if (value = levels[8])
+            return [1,107,231,0.7];		//	Light Blue, Hex:016BE7
+		else
+			return [0,32,229,0.7];		//	Blue, Hex:0020E5
+    };
+
+    //	Reads in the contour lines as GeoJSON objects and creates an openlayers vector object
+    var collection = contourLines;
+    var format = new ol.format.GeoJSON();
+    var vectorSource = new ol.source.Vector({
+        features: format.readFeatures(collection,
+        {featureProjection:"EPSG:4326"})
+        });
+
+	//	Default style
+	var defaultStyle = new ol.style.Style({
+	stroke: new ol.style.Stroke({
+	color: [220,220,220,0.7],
+	width: 1
+	})
+	});
 
 };
 
