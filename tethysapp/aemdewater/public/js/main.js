@@ -257,11 +257,30 @@ function dewater(){
 						},
 						'features': waterTableRegional
 					};
+
+					contours = (JSON.parse(data.contours));
+					var contourLines = {
+						'type': 'FeatureCollection',
+						'crs': {
+							'type': 'name',
+							'properties': {
+								'name':'EPSG:4326'
+							}
+						}
+						'features': contours
+					}
+
 					addWaterTable(raster_elev_mapView,"Water Table");
 					addDewateredLayer(raster_elev_mapView,"Dewatered Region(s)");
+					addContours(contourLines, "Elevation Contours");
 					}
 			});
 };
+//  #################################### Add the new water table contours to the map ###################################
+function addContours(contourLines,titleName){
+
+};
+
 //  #################################### Add the new water table raster to the map #####################################
 
 function addWaterTable(raster_elev,titleName){
@@ -506,7 +525,7 @@ function toggle_legend(boolean,layer){
     }
 };
 
-//  #################################### Remove Features via button ####################################################
+//  #################################### Add Contour Legend ############################################################
 
 
 //Create public functions to be called in the controller
