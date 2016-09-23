@@ -237,7 +237,8 @@ def generate_water_table(request):
     return JsonResponse({
         "sucess": "Data analysis complete!",
         "local_Water_Table": json.dumps(waterTable),
-        "contours": json.dumps(Contours)
+        "contours": json.dumps(Contours),
+        "heads": json.dumps(intervals)
     })
 
 
