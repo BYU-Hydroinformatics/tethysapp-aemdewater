@@ -1,5 +1,4 @@
 import sys
-import os
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -137,8 +136,6 @@ def generate_water_table(request):
     q = float(json.loads(get_data['q']))
     k = float(json.loads(get_data['k']))
 
-    waterTable = []
-
     #This is the analytic element model test, retrieving heads for now
     ml = Model(k = [k], zb = [bedrock], zt = [initial])
     Constant(ml,wXCoords[0]+500,wYCoords[0]+500,initial,[0])
@@ -153,7 +150,7 @@ def generate_water_table(request):
 
     i = 0
     while (i < len(wYCoords)):
-        Well(ml,wXCoords[i],wYCoords[i],pumpRate,10,0)
+        Well(ml,wXCoords[i],wYCoords[i],pumpRate,0.5,0)
         # print wXCoords[i]
         # print wYCoords[i]
         i = i + 1
@@ -162,25 +159,34 @@ def generate_water_table(request):
     #
     ml.solve(doIterations=True)
 
-    # contourList = timcontour(ml, 0, 20000, 50, 0, 20000, 50, 3, 20, newfig = True, returncontours = True)
-    # matplotlib.pyplot.clf()
-    # matplotlib.pyplot.cla()
-    # matplotlib.pyplot.close("all")
-
     root.destroy()
 
+    contourList = timcontour(ml, xIndex[0], xIndex[1], np.absolute((xIndex[0]-xIndex[1])/cellSide), yIndex[0],
+                             yIndex[1], np.absolute((yIndex[0]-yIndex[1])/cellSide), levels = 10,
+                             newfig = True, returncontours = True)
 
-    # try:
-    #     count = 0
-    #     while (count<100):
-    #         print contourList.collections[count].get_paths()
-    #         print count
-    #         count = count + 1
-    # except:
-    #     pass
+    # Return the contour paths and store them as a list
+    contourPaths = []
+
+    # This retrieves the heads of each contour traced by TimML and stores them in intervals[]
+    intervals = contourList.levels
+    # print intervals
+
+    # Retrieves the contour traces and stores them in contourPaths[]
+    i = 0
+    while (i < 10):
+        print i
+        contourPaths.append(contourList.collections[i].get_paths())
+        i += 1
+
+
+    print contourPaths
+
 
     # This section constructs the featurecollection polygons defining the water table elevations
     # Cells are defined at the corners, water table elevation is defined at the center of the cell
+
+    waterTable = []
 
     for long in np.arange(xIndex[0]-cellSide, xIndex[1]+cellSide, cellSide):
         for lat in np.arange(yIndex[0]-cellSide, yIndex[1]+cellSide, cellSide):
@@ -202,9 +208,36 @@ def generate_water_table(request):
                     }
             })
 
+    # This collects the contour lines and creates JSON objects for the response to AJAX request (to be drawn in js)
+
+    Contours = []
+    i = 0
+
+    for path in contourList.collections:
+        for segment in path.get_segments():
+            trace = []
+            for piece in segment:
+                trace.extend(piece)
+
+            Contours.append({
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'LineString',
+                    'coordinates': trace
+                },
+                'properties':{
+                    'head' : intervals[i],
+                }
+            })
+        i += 1
+
+    # print "Showing the Contour Objects"
+    # print Contours
+
     return JsonResponse({
         "sucess": "Data analysis complete!",
-        "local_Water_Table": json.dumps(waterTable)
+        "local_Water_Table": json.dumps(waterTable),
+        "contours": json.dumps(Contours)
     })
 
 
