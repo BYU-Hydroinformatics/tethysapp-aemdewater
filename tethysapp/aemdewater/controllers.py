@@ -114,11 +114,8 @@ def generate_water_table(request):
     # print sys.path
 
     from timml import *
-    # import matplotlib.pyplot
+    import matplotlib.pyplot
     # matplotlib.use('PS')
-    # import matplotlib.pyplot
-    # matplotlib.pyplot.ioff()
-    # matplotlib.pyplot.close("all")
 
     import Tkinter as tk
     root = tk.Tk()
@@ -159,28 +156,42 @@ def generate_water_table(request):
     #
     ml.solve(doIterations=True)
 
-    root.destroy()
+
 
     contourList = timcontour(ml, xIndex[0], xIndex[1], np.absolute((xIndex[0]-xIndex[1])/cellSide), yIndex[0],
                              yIndex[1], np.absolute((yIndex[0]-yIndex[1])/cellSide), levels = 10,
                              newfig = True, returncontours = True)
+    root.destroy()
+    # matplotlib.pyplot.close("all")
 
     # Return the contour paths and store them as a list
     contourPaths = []
 
     # This retrieves the heads of each contour traced by TimML and stores them in intervals[]
-    intervals = contourList.levels
+    intervals = []
+    i = 0
+
+    retrieveIntervals = contourList.levels
+    try:
+        while(i<10):
+            intervals.append(retrieveIntervals[i])
+            i += 1
+    except:
+        pass
+
     # print intervals
 
     # Retrieves the contour traces and stores them in contourPaths[]
     i = 0
-    while (i < 10):
-        print i
-        contourPaths.append(contourList.collections[i].get_paths())
-        i += 1
+    try:
+        while (i < 10):
+            print i
+            contourPaths.append(contourList.collections[i].get_paths())
+            i += 1
+    except:
+        pass
 
-
-    print contourPaths
+    # print contourPaths
 
 
     # This section constructs the featurecollection polygons defining the water table elevations
