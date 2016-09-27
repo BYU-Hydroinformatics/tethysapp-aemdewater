@@ -227,6 +227,8 @@ function dewater(){
     }
 
     var waterTableRegional = [];
+    var levels = [];
+    var Contours = [];
     var long, lat;
 
 	$.ajax({
@@ -274,7 +276,7 @@ function dewater(){
 
 					addWaterTable(raster_elev_mapView,"Water Table");
 					addDewateredLayer(raster_elev_mapView,"Dewatered Region(s)");
-					addContours(contourLines,levels,"Elevation Contours");
+					//addContours(contourLines,levels,"Elevation Contours");
 					}
 			});
 };
