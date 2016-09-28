@@ -228,7 +228,7 @@ def generate_water_table(request):
         for segment in path.get_segments():
             trace = []
             for piece in segment:
-                trace.extend(piece)
+                trace.append(piece.tolist())
 
             Contours.append({
                 'type': 'Feature',
@@ -237,13 +237,13 @@ def generate_water_table(request):
                     'coordinates': trace
                 },
                 'properties':{
-                    'head' : intervals[i],
+                    'elevation' : intervals[i],
                 }
             })
         i += 1
 
-    # print "Showing the Contour Objects"
-    # print Contours
+    print "Showing the Contour Objects"
+    print Contours
 
     return JsonResponse({
         "sucess": "Data analysis complete!",
