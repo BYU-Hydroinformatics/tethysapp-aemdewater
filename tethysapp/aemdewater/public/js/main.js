@@ -247,8 +247,10 @@ function dewater(){
 			'k': JSON.stringify(k.value),
 			},
 			success: function (data){
-//					console.log(data)
+					console.log(data)
 					waterTableRegional = (JSON.parse(data.local_Water_Table));
+					console.log(waterTableRegional);
+
 					var raster_elev_mapView = {
 						'type': 'FeatureCollection',
 						'crs': {
@@ -263,6 +265,8 @@ function dewater(){
 					levels = (JSON.parse(data.heads));
 
 					Contours = (JSON.parse(data.contours));
+					console.log(Contours);
+
 					var contourLines = {
 						'type': 'FeatureCollection',
 						'crs': {
@@ -276,35 +280,71 @@ function dewater(){
 
 					addWaterTable(raster_elev_mapView,"Water Table");
 					addDewateredLayer(raster_elev_mapView,"Dewatered Region(s)");
-					//addContours(contourLines,levels,"Elevation Contours");
+					addContours(contourLines,levels,"Elevation Contours");
 					}
 			});
 };
 //  #################################### Add the new water table contours to the map ###################################
 function addContours(contourLines,levels,titleName){
+    var getStyleColor;
+    var map;
+    var i;
 
     getStyleColor = function(value) {
-        if (value = levels[0])
-            return (165,42,42,1);		//	Brown, Hex:#A52A2A
-        else if (value = levels[1])
-            return [191,0,23, 1];		//	Red, Hex:BF0017
-        else if (value = levels[2])
-            return [196,87,0,1];		//	Orange, Hex:C45700
-        else if (value = levels[3])
-            return [255,165,0,1];		//	Light Orange, Hex:ffa500
-        else if (value = levels[4])
-            return [255,255,0,1];		//	Yellow, Hex:FFFF00
-        else if (value = levels[5])
-            return [0,255,0,1];			//	Green
-        else if (value = levels[6])
-            return [0,218,157,1];		//	Turqoise(ish), Hex:00DA9D
-        else if (value = levels[7])
-            return [0,158,223,1];		//	Lighter Blue, Hex:009EDF
-        else if (value = levels[8])
-            return [1,107,231,0.7];		//	Light Blue, Hex:016BE7
+        if (value == levels[0])
+            return [165,42,42,0.9];		//	Brown, Hex:#A52A2A
+        else if (value == levels[1])
+            return [191,0,23, 0.9];		//	Red, Hex:BF0017
+        else if (value == levels[2])
+            return [196,87,0,0.9];		//	Orange, Hex:C45700
+        else if (value == levels[3])
+            return [255,165,0,0.9];		//	Light Orange, Hex:ffa500
+        else if (value == levels[4])
+            return [255,255,0,0.9];		//	Yellow, Hex:FFFF00
+        else if (value == levels[5])
+            return [0,255,0,0.9];		//	Green
+        else if (value == levels[6])
+            return [0,218,157,0.9];		//	Turqoise(ish), Hex:00DA9D
+        else if (value == levels[7])
+            return [0,158,223,0.9];		//	Lighter Blue, Hex:009EDF
+        else if (value == levels[8])
+            return [1,107,231,0.9];		//	Light Blue, Hex:016BE7
 		else
-			return [0,32,229,0.7];		//	Blue, Hex:0020E5
+			return [0,32,229,0.9];		//	Blue, Hex:0020E5
     };
+
+	//	Default style
+	var defaultStyle = new ol.style.Style({
+		stroke: new ol.style.Stroke({
+			color: [0,0,0,1],
+			width: 2
+			})
+	});
+
+    //This will be used to cache the style
+    var styleCacheHead = {};
+
+    function styleFunction(feature, resolution){
+        //get the elevation from the feature properties
+        var elevation = feature.get('elevation');
+        //if there is no elevation value or it's one we don't recognize,
+        //return the default style
+        if(!elevation) {
+            return [defaultStyle];
+            }
+        //check the cache and create a new style for the elevation if it's not been created before.
+        if(!styleCacheHead[elevation]){
+            var style_color = getStyleColor(elevation);
+            styleCacheHead[elevation] = new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                	color:style_color,
+                	width:2
+                	}),
+                });
+            }
+    //at this point, the style for the current level is in the cache so return it as an array
+        return [styleCacheHead[elevation]];
+    }
 
     //	Reads in the contour lines as GeoJSON objects and creates an openlayers vector object
     var collection = contourLines;
@@ -314,14 +354,30 @@ function addContours(contourLines,levels,titleName){
         {featureProjection:"EPSG:4326"})
         });
 
-	//	Default style
-	var defaultStyle = new ol.style.Style({
-	stroke: new ol.style.Stroke({
-	color: [220,220,220,0.7],
-	width: 1
-	})
+	var vector = new ol.layer.Image({
+		tethys_legend_title: titleName,
+		zIndex: 4,
+		source: new ol.source.ImageVector({
+			source: vectorSource,
+			style: styleFunction,
+		}),
 	});
 
+	console.log(vector);
+
+	//	Deletes the existing layer containing any old contourlines
+    map = TETHYS_MAP_VIEW.getMap();
+    for (i = 0; i < map.getLayers().getProperties().length ; i ++){
+        if (map.getLayers().item(i).getProperties().tethys_legend_title === titleName)
+            map.removeLayer(map.getLayers().item(i));
+    }
+
+    vector.tethys_legend_title = titleName;
+    map.addLayer(vector);
+
+    TETHYS_MAP_VIEW.updateLegend();
+
+    toggle_legend(true,1);
 };
 
 //  #################################### Add the new water table raster to the map #####################################
@@ -397,7 +453,7 @@ function addWaterTable(raster_elev,titleName){
         {featureProjection:"EPSG:4326"})
         });
 
-    var display = true;
+//    var display = true;
 
     var vector = new ol.layer.Image({
             tethys_legend_title: titleName,
@@ -419,7 +475,7 @@ function addWaterTable(raster_elev,titleName){
 
     TETHYS_MAP_VIEW.updateLegend();
 
-    map.getLayers().item(1).setZIndex(3);
+    map.getLayers().item(1).setZIndex(4);
 
     toggle_legend(true,1);
 
@@ -486,7 +542,7 @@ function addDewateredLayer(raster_elev,titleName){
         {featureProjection:"EPSG:4326"})
         });
 
-    var display = true;
+//    var display = true;
 
     var vector = new ol.layer.Image({
             tethys_legend_title: titleName,
