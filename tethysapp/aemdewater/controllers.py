@@ -242,8 +242,8 @@ def generate_water_table(request):
             })
         i += 1
 
-    print "Showing the Contour Objects"
-    print Contours
+    # print "Showing the Contour Objects"
+    # print Contours
 
     return JsonResponse({
         "sucess": "Data analysis complete!",

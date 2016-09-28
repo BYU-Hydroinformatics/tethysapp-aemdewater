@@ -247,9 +247,9 @@ function dewater(){
 			'k': JSON.stringify(k.value),
 			},
 			success: function (data){
-					console.log(data)
+//					console.log(data)
 					waterTableRegional = (JSON.parse(data.local_Water_Table));
-					console.log(waterTableRegional);
+//					console.log(waterTableRegional);
 
 					var raster_elev_mapView = {
 						'type': 'FeatureCollection',
@@ -265,7 +265,7 @@ function dewater(){
 					levels = (JSON.parse(data.heads));
 
 					Contours = (JSON.parse(data.contours));
-					console.log(Contours);
+//					console.log(Contours);
 
 					var contourLines = {
 						'type': 'FeatureCollection',
@@ -292,25 +292,25 @@ function addContours(contourLines,levels,titleName){
 
     getStyleColor = function(value) {
         if (value == levels[0])
-            return [165,42,42,0.9];		//	Brown, Hex:#A52A2A
+            return [0,0,0,1];			//	Black
         else if (value == levels[1])
-            return [191,0,23, 0.9];		//	Red, Hex:BF0017
+            return [170,1,20, 1];		//	Red
         else if (value == levels[2])
-            return [196,87,0,0.9];		//	Orange, Hex:C45700
+            return [196,100,0,1];		//	Orange
         else if (value == levels[3])
-            return [255,165,0,0.9];		//	Light Orange, Hex:ffa500
+            return [255,165,0,1];		//	Light Orange, Hex:ffa500
         else if (value == levels[4])
-            return [255,255,0,0.9];		//	Yellow, Hex:FFFF00
+            return [255,255,0,1];		//	Yellow, Hex:FFFF00
         else if (value == levels[5])
-            return [0,255,0,0.9];		//	Green
+            return [0,255,0,1];			//	Green
         else if (value == levels[6])
-            return [0,218,157,0.9];		//	Turqoise(ish), Hex:00DA9D
+            return [0,218,157,1];		//	Turqoise(ish), Hex:00DA9D
         else if (value == levels[7])
-            return [0,158,223,0.9];		//	Lighter Blue, Hex:009EDF
+            return [0,158,223,1];		//	Lighter Blue, Hex:009EDF
         else if (value == levels[8])
-            return [1,107,231,0.9];		//	Light Blue, Hex:016BE7
+            return [1,107,231,1];		//	Light Blue, Hex:016BE7
 		else
-			return [0,32,229,0.9];		//	Blue, Hex:0020E5
+			return [0,32,229,1];		//	Blue, Hex:0020E5
     };
 
 	//	Default style
@@ -363,7 +363,7 @@ function addContours(contourLines,levels,titleName){
 		}),
 	});
 
-	console.log(vector);
+//	console.log(vector);
 
 	//	Deletes the existing layer containing any old contourlines
     map = TETHYS_MAP_VIEW.getMap();
@@ -377,7 +377,23 @@ function addContours(contourLines,levels,titleName){
 
     TETHYS_MAP_VIEW.updateLegend();
 
-    toggle_legend(true,1);
+    $('a.display-control').on("click", function(){
+        $(function() {
+            var map = TETHYS_MAP_VIEW.getMap();
+            if (!!map.getLayers().item(2)){
+                toggle_legend(map.getLayers().item(2).getProperties().visible,1);
+            };
+            if (!!map.getLayers().item(3)){
+                toggle_legend(map.getLayers().item(3).getProperties().visible,2);
+            }
+			if (!!map.getLayers().item(4)){
+                toggle_legend(map.getLayers().item(4).getProperties().visible,3);
+            }
+        })
+    });
+
+	toggle_legend(true,3,levels);
+
 };
 
 //  #################################### Add the new water table raster to the map #####################################
@@ -565,27 +581,18 @@ function addDewateredLayer(raster_elev,titleName){
 
     TETHYS_MAP_VIEW.updateLegend();
 
-    $('a.display-control').on("click", function(){
-        $(function() {
-            var map = TETHYS_MAP_VIEW.getMap();
-            if (!!map.getLayers().item(2)){
-                toggle_legend(map.getLayers().item(2).getProperties().visible,1);
-            };
-            if (!!map.getLayers().item(3)){
-                toggle_legend(map.getLayers().item(3).getProperties().visible,2);
-            }
-        })
-    });
-
 }
 
 //  #################################### Toggle Color Legend On/Off ####################################################
-function toggle_legend(boolean,layer){
+function toggle_legend(boolean,layer,levels){
 //    var ele = "";
+//	'levels' is an optional parameter that is only used for constructing the legend for the contours layer
     var i;
+    var text = "null";
 
-    i = 1;
 	if (layer == 1){
+		i = 1;
+
 		document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)+Number(1)+((Number(dwte.value)-Number(bedrock.value))*0.375)));
 		i = i+1;
 		document.getElementById(String(i)).innerHTML = Math.round(Number(Number(dwte.value)+((Number(dwte.value)-Number(bedrock.value))*0.375))) + "-" + Math.round(Number(Number(dwte.value)+((Number(dwte.value)-Number(bedrock.value))*0.25)));
@@ -622,6 +629,87 @@ function toggle_legend(boolean,layer){
             ele.style.display = "none";
 
     }
+	if (layer == 3){
+		i = 12;
+
+		try {
+		text = levels[9];}
+		catch (err) {}
+		document.getElementById(String(i)).innerHTML = text;
+		text = "null";
+		i = i+1;
+
+		try {
+		text = levels[8];}
+		catch (err) {}
+		document.getElementById(String(i)).innerHTML = text;
+		text = "null";
+		i = i+1;
+
+		try {
+		text = levels[7];}
+		catch (err) {
+		text = "null";}
+		document.getElementById(String(i)).innerHTML = text;
+		i = i+1;
+
+		try {
+		text = levels[6];}
+		catch (err) {
+		text = "null";}
+		document.getElementById(String(i)).innerHTML = text;
+		i = i+1;
+
+		try {
+		text = levels[5];}
+		catch (err) {
+		text = "null";}
+		document.getElementById(String(i)).innerHTML = text;
+		i = i+1;
+
+		try {
+		text = levels[4];}
+		catch (err) {
+		text = "null";}
+		document.getElementById(String(i)).innerHTML = text;
+		i = i+1;
+
+		try {
+		text = levels[3];}
+		catch (err) {
+		text = "null";}
+		document.getElementById(String(i)).innerHTML = text;
+		i = i+1;
+
+		try {
+		text = levels[2];}
+		catch (err) {
+		text = "null";}
+		document.getElementById(String(i)).innerHTML = text;
+		i = i+1;
+
+		try {
+		text = levels[1];}
+		catch (err) {
+		text = "null";}
+		document.getElementById(String(i)).innerHTML = text;
+		i = i+1;
+
+		try {
+		text = levels[0];}
+		catch (err) {
+		text = "null";
+		document.getElementById(String(i)).innerHTML = text;}
+		document.getElementById(String(i)).innerHTML = text;
+		i = i+1;
+
+	var ele = document.getElementById("contourLegend");
+
+	if (boolean == true)
+		ele.style.display = "block";
+	else
+		ele.style.display = "none";
+	}
 };
 
 //  #################################### Add Contour Legend ############################################################

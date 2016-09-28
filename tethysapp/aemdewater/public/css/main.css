@@ -54,7 +54,16 @@ div.foo2 {
   background: #BF0017;
 }
 .black{
-  background: rgba(0, 0, 0, 1);
+  background: rgba(0, 0, 0,1);
+}
+.redBright{
+  background: rgba(170,1,20,1);
+}
+.orange2{
+  background: rgba(196,100,0,1);
+}
+.orangeLight{
+  background:rgba(255,165,0,1);
 }
 .elevation {
     /* Make the caption a block so it occupies its own line. */
