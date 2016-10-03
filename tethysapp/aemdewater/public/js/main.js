@@ -132,6 +132,7 @@ function dewater(){
 
 	toggle_legend(false,1);
 	toggle_legend(false,2);
+	toggle_legend(false,3);
 
  //this reads the number of features found in the map object and verifies that all of the required features are present
     mapFeatures = map.getLayers().item(1).getSource().getFeatures();
@@ -263,6 +264,7 @@ function dewater(){
 					};
 
 					levels = (JSON.parse(data.heads));
+					window.sessionStorage['levels'] = data.heads;
 
 					Contours = (JSON.parse(data.contours));
 //					console.log(Contours);
@@ -590,6 +592,13 @@ function toggle_legend(boolean,layer,levels){
     var i;
     var text = "null";
 
+    if(!levels){
+		try{
+			levels = JSON.parse(window.sessionStorage['levels']);
+		}
+		catch(err){}
+	};
+
 	if (layer == 1){
 		i = 1;
 
@@ -629,86 +638,88 @@ function toggle_legend(boolean,layer,levels){
             ele.style.display = "none";
 
     }
-	if (layer == 3){
+
+	if (layer == 3 && levels){
 		i = 12;
 
 		try {
 		text = levels[9];}
-		catch (err) {}
+		catch (err) {text = "undefined"}
+		if (text == undefined || document.getElementById(String(i)).innerHTML == "undefined"){text = "null"};
 		document.getElementById(String(i)).innerHTML = text;
-		text = "null";
 		i = i+1;
 
 		try {
 		text = levels[8];}
-		catch (err) {}
+		catch (err) {text = "undefined"}
+		if (text == undefined || document.getElementById(String(i)).innerHTML == "undefined"){text = "null"};
 		document.getElementById(String(i)).innerHTML = text;
-		text = "null";
 		i = i+1;
 
 		try {
 		text = levels[7];}
-		catch (err) {
-		text = "null";}
+		catch (err) {text = "undefined"}
+		if (text == undefined || document.getElementById(String(i)).innerHTML == "undefined"){text = "null"};
 		document.getElementById(String(i)).innerHTML = text;
 		i = i+1;
 
 		try {
 		text = levels[6];}
-		catch (err) {
-		text = "null";}
+		catch (err) {text = "undefined"}
+		if (text == undefined || document.getElementById(String(i)).innerHTML == "undefined"){text = "null"};
 		document.getElementById(String(i)).innerHTML = text;
 		i = i+1;
 
 		try {
 		text = levels[5];}
-		catch (err) {
-		text = "null";}
+		catch (err) {text = "undefined"}
+		if (text == undefined || document.getElementById(String(i)).innerHTML == "undefined"){text = "null"};
 		document.getElementById(String(i)).innerHTML = text;
 		i = i+1;
 
 		try {
 		text = levels[4];}
-		catch (err) {
-		text = "null";}
+		catch (err) {text = "undefined"}
+		if (text == undefined || document.getElementById(String(i)).innerHTML == "undefined"){text = "null"};
 		document.getElementById(String(i)).innerHTML = text;
 		i = i+1;
 
 		try {
 		text = levels[3];}
-		catch (err) {
-		text = "null";}
+		catch (err) {text = "undefined"}
+		if (text == undefined || document.getElementById(String(i)).innerHTML == "undefined"){text = "null"};
 		document.getElementById(String(i)).innerHTML = text;
 		i = i+1;
 
 		try {
 		text = levels[2];}
-		catch (err) {
-		text = "null";}
+		catch (err) {text = "undefined"}
+		if (text == undefined || document.getElementById(String(i)).innerHTML == "undefined"){text = "null"};
 		document.getElementById(String(i)).innerHTML = text;
 		i = i+1;
 
 		try {
 		text = levels[1];}
-		catch (err) {
-		text = "null";}
+		catch (err) {text = "undefined"}
+		if (text == undefined || document.getElementById(String(i)).innerHTML == "undefined"){text = "null"};
 		document.getElementById(String(i)).innerHTML = text;
 		i = i+1;
 
 		try {
 		text = levels[0];}
-		catch (err) {
-		text = "null";
-		document.getElementById(String(i)).innerHTML = text;}
+		catch (err) {text = "undefined"}
+		if (text == undefined || document.getElementById(String(i)).innerHTML == "undefined"){text = "null"};
 		document.getElementById(String(i)).innerHTML = text;
 		i = i+1;
+	}
 
-	var ele = document.getElementById("contourLegend");
+	if (layer == 3){
+		var ele = document.getElementById("contourLegend");
 
-	if (boolean == true)
-		ele.style.display = "block";
-	else
-		ele.style.display = "none";
+		if (boolean == true)
+			ele.style.display = "block";
+		else
+			ele.style.display = "none";
 	}
 };
 
