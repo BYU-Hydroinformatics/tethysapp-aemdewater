@@ -119,6 +119,7 @@ function dewater(){
     var map;
     var mapFeatures;
     var wells = [];
+    var trenches = [];
     var perimeter = [];
     var mapFeatures = [];
 
@@ -143,6 +144,9 @@ function dewater(){
         }
         else if (map.getLayers().item(1).getSource().getFeatures()[i].getGeometry().getType() === 'Polygon') {
             perimeter.push(map.getLayers().item(1).getSource().getFeatures()[i].getGeometry().getCoordinates());
+        }
+        if (map.getLayers().item(1).getSource().getFeatures()[i].getGeometry().getType() === 'LineString') {
+            trenches.push(map.getLayers().item(1).getSource().getFeatures()[i].getGeometry().getCoordinates());
         }
     }
 
@@ -640,7 +644,7 @@ function toggle_legend(boolean,layer,levels){
     }
 
 	if (layer == 3 && levels){
-		i = 12;
+		i = 14;
 
 		try {
 		text = levels[9];}
