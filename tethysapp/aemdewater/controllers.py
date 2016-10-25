@@ -26,7 +26,7 @@ def home(request):
 
     # Define drawing options
     drawing_options = MVDraw(
-        controls=['Delete', 'Move', 'Point', 'Box', 'Polygon', 'LineString'],
+        controls=['Delete', 'Move', 'Point', 'Box'],     # , 'Polygon', 'LineString'
         initial='Box',
         output_format='WKT'
     )
@@ -72,7 +72,7 @@ def home(request):
                   initial='2',
                   placeholder='e.g. 2',
                   prepend='Q =',
-                  append='[cfs]',
+                  append='[ft^3/s]',
                   )
     dwte = TextInput(display_text='Desired Water Table Elevation',
                   name='dwte',
@@ -81,6 +81,27 @@ def home(request):
                   prepend='Elev. =',
                   append='[ft]',
                   )
+
+    # Define Toggle switch for slurry trench being enabled
+
+    slurry = ToggleSwitch(display_text='Enable Slurry Trench Boundary',
+                          name='slurry',
+                          attributes='')
+
+    slurryK = TextInput(display_text='Slurry Hydraulic Conductivity',
+                        name='slurryK',
+                        initial='0.00000000347',
+                        placeholder='e.g. 3.47E-9',
+                        prepend='k =',
+                        append='[ft/s]',
+                        )
+    slurryT = TextInput(display_text='Slurry Wall Thickness',
+                    name='slurryT',
+                    initial='3',
+                    placeholder='e.g. 3',
+                    prepend='t =',
+                    append='[ft]',
+                    )
 
     execute = Button(display_text='Calculate Water Table Elevations',
                      attributes='onclick=app.dewater();',
@@ -98,7 +119,10 @@ def home(request):
                 'q':q,
                 'dwte':dwte,
                 'execute':execute,
-                'instructions':instructions}
+                'instructions':instructions,
+                'slurry':slurry,
+                'slurryK':slurryK,
+                'slurryT':slurryT}
 
     return render(request, 'aemdewater/home.html', context)
 
@@ -133,12 +157,42 @@ def generate_water_table(request):
     q = float(json.loads(get_data['q']))
     k = float(json.loads(get_data['k']))
 
+    # slurry trench information
+    slurry = json.loads(get_data['slurry'])
+    slurryK = float(json.loads(get_data['slurryK']))
+    slurryT = float(json.loads(get_data['slurryT']))
+    pXCoords = json.loads(get_data['pXCoords'])
+    pYCoords = json.loads(get_data['pYCoords'])
+    xylist1 = []
+    xylist2 = []
+
     #This is the analytic element model test, retrieving heads for now
     ml = Model(k = [k], zb = [bedrock], zt = [initial])
-    Constant(ml,wXCoords[0]+500,wYCoords[0]+500,initial,[0])
 
-    # print (xIndex[0]+500)
-    # print (yIndex[0]+500)
+    if(slurry):
+        print "Starting slurry simulation"
+        # Define Exterior Boundary of Slurry Trench
+        xylist1.append([pXCoords[0]-slurryT/2,pYCoords[0]-slurryT/2])
+        xylist1.append([pXCoords[1]-slurryT/2,pYCoords[1]+slurryT/2])
+        xylist1.append([pXCoords[2]+slurryT/2,pYCoords[2]+slurryT/2])
+        xylist1.append([pXCoords[3]+slurryT/2,pYCoords[3]-slurryT/2])
+        print xylist1
+
+        #Define Interior Boundary of Slurry Trench
+        xylist2.append([pXCoords[0]+slurryT/2,pYCoords[0]+slurryT/2])
+        xylist2.append([pXCoords[1]+slurryT/2,pYCoords[1]-slurryT/2])
+        xylist2.append([pXCoords[2]-slurryT/2,pYCoords[2]-slurryT/2])
+        xylist2.append([pXCoords[3]-slurryT/2,pYCoords[3]+slurryT/2])
+        print xylist2
+
+        PolygonInhom(ml,k=[k],c=[],zb=[bedrock],zt=[initial],xylist=xylist2)
+        PolygonInhom(ml,k=[slurryK],c=[],zb=[bedrock],zt=[initial],xylist=xylist1)
+
+        MakeInhomPolySide(ml, xylist=xylist1, order=5, closed=True)
+        MakeInhomPolySide(ml, xylist=xylist2, order=5, closed=True)
+
+
+    Constant(ml,wXCoords[0]+500,wYCoords[0]+500,initial,[0])
 
     # Add the wells to the analytic element model
 
@@ -148,8 +202,6 @@ def generate_water_table(request):
     i = 0
     while (i < len(wYCoords)):
         Well(ml,wXCoords[i],wYCoords[i],pumpRate,0.5,0)
-        # print wXCoords[i]
-        # print wYCoords[i]
         i = i + 1
         # print len(wYCoords)
 

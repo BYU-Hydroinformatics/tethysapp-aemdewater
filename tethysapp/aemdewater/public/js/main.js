@@ -122,6 +122,7 @@ function dewater(){
     var trenches = [];
     var perimeter = [];
     var mapFeatures = [];
+    var slurryTrench;
 
      //counters for building arrays
     var i = 0;
@@ -250,6 +251,12 @@ function dewater(){
 			'bedrock': JSON.stringify(bedrock.value),
 			'q': JSON.stringify(q.value),
 			'k': JSON.stringify(k.value),
+//			slurry trench parameters
+			'slurry': JSON.stringify(slurry.checked),
+			'slurryK': JSON.stringify(slurryK.value),
+			'slurryT': JSON.stringify(slurryT.value),
+			'pXCoords': JSON.stringify(pXCoords),
+			'pYCoords': JSON.stringify(pYCoords),
 			},
 			success: function (data){
 //					console.log(data)
@@ -647,70 +654,70 @@ function toggle_legend(boolean,layer,levels){
 		i = 14;
 
 		try {
-		text = levels[9];}
+		text = levels[9].toFixed(1);}
 		catch (err) {text = "undefined"}
 		if (text == undefined || document.getElementById(String(i)).innerHTML == "undefined"){text = "null"};
 		document.getElementById(String(i)).innerHTML = text;
 		i = i+1;
 
 		try {
-		text = levels[8];}
+		text = levels[8].toFixed(1);}
 		catch (err) {text = "undefined"}
 		if (text == undefined || document.getElementById(String(i)).innerHTML == "undefined"){text = "null"};
 		document.getElementById(String(i)).innerHTML = text;
 		i = i+1;
 
 		try {
-		text = levels[7];}
+		text = levels[7].toFixed(1);}
 		catch (err) {text = "undefined"}
 		if (text == undefined || document.getElementById(String(i)).innerHTML == "undefined"){text = "null"};
 		document.getElementById(String(i)).innerHTML = text;
 		i = i+1;
 
 		try {
-		text = levels[6];}
+		text = levels[6].toFixed(1);}
 		catch (err) {text = "undefined"}
 		if (text == undefined || document.getElementById(String(i)).innerHTML == "undefined"){text = "null"};
 		document.getElementById(String(i)).innerHTML = text;
 		i = i+1;
 
 		try {
-		text = levels[5];}
+		text = levels[5].toFixed(1);}
 		catch (err) {text = "undefined"}
 		if (text == undefined || document.getElementById(String(i)).innerHTML == "undefined"){text = "null"};
 		document.getElementById(String(i)).innerHTML = text;
 		i = i+1;
 
 		try {
-		text = levels[4];}
+		text = levels[4].toFixed(1);}
 		catch (err) {text = "undefined"}
 		if (text == undefined || document.getElementById(String(i)).innerHTML == "undefined"){text = "null"};
 		document.getElementById(String(i)).innerHTML = text;
 		i = i+1;
 
 		try {
-		text = levels[3];}
+		text = levels[3].toFixed(1);}
 		catch (err) {text = "undefined"}
 		if (text == undefined || document.getElementById(String(i)).innerHTML == "undefined"){text = "null"};
 		document.getElementById(String(i)).innerHTML = text;
 		i = i+1;
 
 		try {
-		text = levels[2];}
+		text = levels[2].toFixed(1);}
 		catch (err) {text = "undefined"}
 		if (text == undefined || document.getElementById(String(i)).innerHTML == "undefined"){text = "null"};
 		document.getElementById(String(i)).innerHTML = text;
 		i = i+1;
 
 		try {
-		text = levels[1];}
+		text = levels[1].toFixed(1);}
 		catch (err) {text = "undefined"}
 		if (text == undefined || document.getElementById(String(i)).innerHTML == "undefined"){text = "null"};
 		document.getElementById(String(i)).innerHTML = text;
 		i = i+1;
 
 		try {
-		text = levels[0];}
+		text = levels[0].toFixed(1);}
 		catch (err) {text = "undefined"}
 		if (text == undefined || document.getElementById(String(i)).innerHTML == "undefined"){text = "null"};
 		document.getElementById(String(i)).innerHTML = text;
@@ -729,7 +736,75 @@ function toggle_legend(boolean,layer,levels){
 
 //  #################################### Add Contour Legend ############################################################
 
+//  ###################################### Change Unit Tags ############################################################
 
+
+function metricUnits(){
+	var element = document.getElementsByClassName("input-group-addon");
+	if (element[1].textContent.includes("ft")){
+		k.value = (k.value/3.28084).toPrecision(3);
+		bedrock.value = (bedrock.value/3.28084).toPrecision(3);
+		iwte.value = (iwte.value/3.28084).toPrecision(3);
+		q.value = (q.value/Math.pow(3.28084,3)).toPrecision(3);
+		dwte.value = (dwte.value/3.28084).toPrecision(3);
+		slurryK.value = (slurryK.value/3.28084).toPrecision(3);
+		slurryT.value = (slurryT.value/3.28084).toPrecision(3);
+	}
+	for (var i=0; i < element.length; i++){
+		if (element[i].textContent.includes("ft")){
+			element[i].textContent=element[i].textContent.replace("ft","m");
+		}
+	}
+}
+
+function USUnits(){
+	var element = document.getElementsByClassName("input-group-addon");
+	var input = document.getElementsByClassName("form-control");
+	input = Array.prototype.slice.call(input,0);
+	input.splice(5,1);
+	if (element[1].textContent.includes("m")){
+		k.value = (k.value*3.28084).toPrecision(3);
+		bedrock.value = (bedrock.value*3.28084).toPrecision(3);
+		iwte.value = (iwte.value*3.28084).toPrecision(3);
+		q.value = (q.value*Math.pow(3.28084,3)).toPrecision(3);
+		dwte.value = (dwte.value*3.28084).toPrecision(3);
+		slurryK.value = (slurryK.value*3.28084).toPrecision(3);
+		slurryT.value = (slurryT.value*3.28084).toPrecision(3);
+	}
+	for (var i=0; i < element.length; i++){
+		if (element[i].textContent.includes("m")){
+			element[i].textContent=element[i].textContent.replace("m","ft");
+		}
+	}
+}
+
+function secUnits(){
+	var element = document.getElementsByClassName("input-group-addon");
+	if (element[1].textContent.includes("d")){
+		k.value = (k.value/24/3600).toPrecision(3);
+		q.value = (q.value/24/3600).toPrecision(3);
+		slurryK.value = (slurryK.value/24/3600).toPrecision(3);
+	}
+	for (var i=0; i < element.length; i++){
+		if (element[i].textContent.includes("d")){
+			element[i].textContent=element[i].textContent.replace("d","s");
+		}
+	}
+}
+
+function dayUnits(){
+	var element = document.getElementsByClassName("input-group-addon");
+	if (element[1].textContent.includes("s")){
+		k.value = (k.value*24*3600).toPrecision(3);
+		q.value = (q.value*24*3600).toPrecision(3);
+		slurryK.value = (slurryK.value*24*3600).toPrecision(3);
+	}
+	for (var i=0; i < element.length; i++){
+		if (element[i].textContent.includes("s")){
+			element[i].textContent=element[i].textContent.replace("s","d");
+		}
+	}
+}
 //Create public functions to be called in the controller
 var app;
 app = {dewater: dewater}
