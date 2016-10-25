@@ -7,8 +7,28 @@
 {% block app_navigation_items %}
 
 <!--   <button type="button" class="btn btn-default" data-toggle="modal" data-target="#welcome-popup">Instructions</button> -->
-   <button type="button" class="btn btn-primary" onclick="welcome_modal()">Instructions</button>
+   <button type="button" class="btn btn-primary" onclick="welcome_modal();">Instructions</button>
 
+    <li><p> </p></li>
+
+    <li>
+        <div class="btn-group" data-toggle="buttons">
+            <label class="btn btn-info active">
+                <input id="25" type="radio" name="distance" autocomplete="off" value="USA" checked onchange="USUnits();"> U.S.
+            </label>
+            <label class="btn btn-info">
+                <input id="26" type="radio" name="distance" autocomplete="off" value="Metric" onchange="metricUnits();"> Metric
+            </label>
+        </div>
+        <div class="btn-group" data-toggle="buttons">
+            <label class="btn btn-info active">
+                <input id="27" type="radio" name="time" autocomplete="off" value="sec" checked onchange="secUnits();"> Seconds
+            </label>
+            <label class="btn btn-info">
+                <input id="28" type="radio" name="time" autocomplete="off" value="day" onchange="dayUnits();"> Days
+            </label>
+        </div>
+    </li>
 	<li class='title'><b>Aquifer Properties</b></li>
 
 	  	{% csrf_token %}
@@ -17,10 +37,14 @@
 		{% gizmo text_input bedrock %}
 		{% gizmo text_input iwte %}
 
-		<li class='title'><b>Project Specifications</b></li>
+    <li class='title'><b>Project Specifications</b></li>
 
 		{% gizmo text_input q %}
 		{% gizmo text_input dwte %}
+
+        {% gizmo toggle_switch slurry %}
+        {% gizmo text_input slurryK %}
+        {% gizmo text_input slurryT %}
 
 		{% gizmo button execute %}
 
