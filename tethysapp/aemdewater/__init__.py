@@ -11,14 +11,14 @@ except ImportError:
 # the Windows version for Matplotlib. This is an artificial package that allows me to import everything necessary
 # for the repository to function properly.
 
-__name__="matplotlib.pyplot"
-
-sys.path.append("/usr/local/lib/python2.7/dist-packages/matplotlib")
-# sys.path.append("/usr/lib/pymodules/python2.7")
-# sys.path.append("/usr/lib/python2.7/dist-packages")
-
-from pyplot import *
-
-# sys.path.remove("/usr/share/pyshared/matplotlib")
-# sys.path.remove("/usr/lib/pymodules/python2.7")
-sys.path.append("/usr/local/lib/python2.7/dist-packages/matplotlib")
+# __name__="matplotlib.pyplot"
+#
+# sys.path.append("/usr/local/lib/python2.7/dist-packages/matplotlib")
+# # sys.path.append("/usr/lib/pymodules/python2.7")
+# # sys.path.append("/usr/lib/python2.7/dist-packages")
+#
+# from pyplot import *
+#
+# # sys.path.remove("/usr/share/pyshared/matplotlib")
+# # sys.path.remove("/usr/lib/pymodules/python2.7")
+# sys.path.append("/usr/local/lib/python2.7/dist-packages/matplotlib")
