@@ -188,8 +188,8 @@ def generate_water_table(request):
         PolygonInhom(ml,k=[k],c=[],zb=[bedrock],zt=[initial],xylist=xylist2)
         PolygonInhom(ml,k=[slurryK],c=[],zb=[bedrock],zt=[initial],xylist=xylist1)
 
-        MakeInhomPolySide(ml, xylist=xylist1, order=5, closed=True)
         MakeInhomPolySide(ml, xylist=xylist2, order=5, closed=True)
+        MakeInhomPolySide(ml, xylist=xylist1, order=5, closed=True)
 
 
     Constant(ml,wXCoords[0]+500,wYCoords[0]+500,initial,[0])
