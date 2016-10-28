@@ -128,12 +128,17 @@ def home(request):
 
 
 def generate_water_table(request):
+    status = "append paths"
 
-    #set module paths for timml repository
-    sys.path.append("/var/www/tethys/apps/tethysapp-aemdewater/tethysapp/aemdewater/timml")
-    sys.path.append("/usr/local/lib/python2.7/dist-packages")
-    sys.path.append("/usr/lib/python2.7/dist-packages")
-
+    try:
+        #set module paths for timml repository
+        sys.path.append("/var/www/tethys/apps/tethysapp-aemdewater/tethysapp/aemdewater/timml")
+        sys.path.append("/usr/local/lib/python2.7/dist-packages")
+        sys.path.append("/usr/lib/python2.7/dist-packages")
+    except Exception,e:
+        print str(e)
+        return JsonResponse({"error":str(e),"message":status})
+    
     # print os.getcwd()
     # print sys.path
     status = "import timml"
