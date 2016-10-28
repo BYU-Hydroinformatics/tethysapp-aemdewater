@@ -262,6 +262,7 @@ function dewater(){
 //					console.log(data)
 					if (data.error){
 						console.log(data.error);
+						console.log(data.message);
 						return
 					}
 					waterTableRegional = (JSON.parse(data.local_Water_Table));
