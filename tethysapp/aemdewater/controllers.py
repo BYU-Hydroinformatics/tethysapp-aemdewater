@@ -144,7 +144,11 @@ def generate_water_table(request):
     import matplotlib.pyplot
     # matplotlib.use('PS')
 
-    import Tkinter as tk
+    try:
+        import Tkinter as tk
+    except Exception,e:
+        print str(e)
+        return JsonResponse({"error":str(e)})
     root = tk.Tk()
 
 
