@@ -131,8 +131,8 @@ def generate_water_table(request):
 
     #set module paths for timml repository
     sys.path.append("/var/www/tethys/apps/tethysapp-aemdewater/tethysapp/aemdewater/timml")
-    # sys.path.append("/usr/local/lib/python2.7/dist-packages")
-    # sys.path.append("/usr/lib/python2.7/dist-packages")
+    sys.path.append("/usr/local/lib/python2.7/dist-packages")
+    sys.path.append("/usr/lib/python2.7/dist-packages")
 
     # print os.getcwd()
     # print sys.path
