@@ -136,9 +136,13 @@ def generate_water_table(request):
 
     # print os.getcwd()
     # print sys.path
+    try:
+        from timml import *
+    except Exception,e:
+        print str(e)
+        return JsonResponse({"error":str(e)})
 
-    from timml import *
-    import matplotlib.pyplot
+    # import matplotlib.pyplot
     # matplotlib.use('PS')
 
     import Tkinter as tk
