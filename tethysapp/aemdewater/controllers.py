@@ -138,6 +138,8 @@ def generate_water_table(request):
     except Exception,e:
         print str(e)
         return JsonResponse({"error":str(e),"message":status})
+    else:
+        return JsonResponse({"error":'non',"message":status})
 '''
     # print os.getcwd()
     # print sys.path
@@ -365,4 +367,4 @@ def generate_water_table(request):
         "local_Water_Table": json.dumps(waterTable),
         "contours": json.dumps(Contours),
         "heads": json.dumps(intervals)
-'''    
+'''
