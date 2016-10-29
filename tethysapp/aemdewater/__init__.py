@@ -11,7 +11,7 @@ except ImportError:
 # the Windows version for Matplotlib. This is an artificial package that allows me to import everything necessary
 # for the repository to function properly.
 
-__name__="matplotlib.pyplot"
+# __name__="matplotlib.pyplot"
 
 # sys.path.append("/usr/local/lib/python2.7/dist-packages/matplotlib")
 # sys.path.append("/usr/local/lib/python2.7/dist-packages/matplotlib/externals")
