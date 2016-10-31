@@ -1,4 +1,4 @@
-import sys
+# import sys
 # this is a namespace package
 try:
     import pkg_resources
@@ -7,6 +7,9 @@ except ImportError:
     import pkgutil
     __path__ = pkgutil.extend_path(__path__, __name__)
 
+
+import matplotlib
+matplotlib.use('Agg')
 # This __name__ is required by TimML to function, but the file directories are different in the Linux version from
 # the Windows version for Matplotlib. This is an artificial package that allows me to import everything necessary
 # for the repository to function properly.

@@ -129,24 +129,12 @@ def home(request):
 
 def generate_water_table(request):
 
-    #set module paths for timml repository
-    sys.path.append("/home/jacobbf1/tethysdev/tethysapp-aemdewater/tethysapp/aemdewater/timml")
-    sys.path.append("/usr/local/lib/python2.7/dist-packages")
-    sys.path.append("/usr/lib/python2.7/dist-packages")
-
-    # print os.getcwd()
-    # print sys.path
     try:
         from timml import *
     except Exception,e:
         print str(e)
         return JsonResponse({"error":str(e)})
 
-    # import matplotlib.pyplot
-    # matplotlib.use('PS')
-
-    import Tkinter as tk
-    root = tk.Tk()
 
 
     get_data = request.GET
@@ -217,8 +205,6 @@ def generate_water_table(request):
     contourList = timcontour(ml, xIndex[0], xIndex[1], np.absolute((xIndex[0]-xIndex[1])/cellSide), yIndex[0],
                              yIndex[1], np.absolute((yIndex[0]-yIndex[1])/cellSide), levels = 10,
                              newfig = True, returncontours = True)
-    root.destroy()
-    # matplotlib.pyplot.close("all")
 
     # Return the contour paths and store them as a list
     contourPaths = []
