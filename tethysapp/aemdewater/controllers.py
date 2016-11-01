@@ -104,6 +104,7 @@ def home(request):
                     )
 
     execute = Button(display_text='Calculate Water Table Elevations',
+                     name='execute',
                      attributes='onclick=app.dewater();',
                      submit=True,
                      classes='btn-success')

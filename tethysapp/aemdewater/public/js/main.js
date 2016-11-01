@@ -26,6 +26,7 @@ function welcome_modal() {
 
 $(document).ready(function(){
     welcome_modal();
+    document.getElementById("loading").style.display="none";
 });
 
 //  #################################### Verify that the user has the necessary variables ##############################
@@ -237,6 +238,15 @@ function dewater(){
     var Contours = [];
     var long, lat;
 
+    document.getElementById('loading').style.display = "block";
+
+    document.addEventListener("click",handler,true);
+
+    function handler(e){
+        e.stopPropagation();
+        e.preventDefault();
+    }
+
 	$.ajax({
 		type: 'GET',
 		url: 'generate-water-table',
@@ -298,6 +308,7 @@ function dewater(){
 					addWaterTable(raster_elev_mapView,"Water Table");
 					addDewateredLayer(raster_elev_mapView,"Dewatered Region(s)");
 					addContours(contourLines,levels,"Elevation Contours");
+                    document.removeEventListener("click",handler,true);
 					}
 			});
 };
@@ -410,6 +421,7 @@ function addContours(contourLines,levels,titleName){
     });
 
 	toggle_legend(true,3,levels);
+	document.getElementById('loading').style.display = "none";
 
 };
 

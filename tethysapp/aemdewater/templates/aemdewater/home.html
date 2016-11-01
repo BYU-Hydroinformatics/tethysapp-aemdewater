@@ -56,6 +56,11 @@
     {{ block.super }}
 
     {% gizmo map_view map_view_options %}
+    <div id="loading" class="load">
+        <img id="loading-image"
+        src="{% static 'aemdewater/images/ajax-loader-transparent.gif' %}"
+        alt="Loading..."/>
+    </div>
 
 <!--Create small legend for color scheme-->
 <div id="colorLegend" style="display: none">
