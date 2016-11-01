@@ -158,7 +158,8 @@ def generate_water_table(request):
     xylist1 = []
     xylist2 = []
 
-    #This is the analytic element model test, retrieving heads for now
+    #This is the analytic element model. Reinitialize ml variable on start as string
+    ml = ""
     ml = Model(k = [k], zb = [bedrock], zt = [initial])
 
     if(slurry):
