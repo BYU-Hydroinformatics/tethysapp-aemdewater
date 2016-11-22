@@ -11,4 +11,5 @@ tethysapp_aemdewater.egg-info/SOURCES.txt
 tethysapp_aemdewater.egg-info/dependency_links.txt
 tethysapp_aemdewater.egg-info/namespace_packages.txt
 tethysapp_aemdewater.egg-info/not-zip-safe
+tethysapp_aemdewater.egg-info/requires.txt
 tethysapp_aemdewater.egg-info/top_level.txt

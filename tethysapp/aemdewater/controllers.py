@@ -1,4 +1,3 @@
-import sys
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -274,16 +273,17 @@ def generate_water_table(request):
             for piece in segment:
                 trace.append(piece.tolist())
 
-            Contours.append({
-                'type': 'Feature',
-                'geometry': {
-                    'type': 'LineString',
-                    'coordinates': trace
-                },
-                'properties':{
-                    'elevation' : intervals[i],
-                }
-            })
+            if (i<len(intervals)):
+                Contours.append({
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'LineString',
+                        'coordinates': trace
+                    },
+                    'properties':{
+                        'elevation' : intervals[i],
+                    }
+                })
         i += 1
 
     # print "Showing the Contour Objects"

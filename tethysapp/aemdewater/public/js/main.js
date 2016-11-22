@@ -516,6 +516,7 @@ function addWaterTable(raster_elev,titleName){
             map.removeLayer(map.getLayers().item(i));
     }
     vector.tethys_legend_title = titleName;
+    vector.editable = false;
     map.addLayer(vector);
 
     TETHYS_MAP_VIEW.updateLegend();
