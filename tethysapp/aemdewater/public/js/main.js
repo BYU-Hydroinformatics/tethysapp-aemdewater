@@ -401,6 +401,7 @@ function addContours(contourLines,levels,titleName){
     }
 
     vector.tethys_legend_title = titleName;
+    vector.editable = false;
     map.addLayer(vector);
 
     TETHYS_MAP_VIEW.updateLegend();
@@ -607,6 +608,7 @@ function addDewateredLayer(raster_elev,titleName){
     }
     vector.tethys_legend_title = titleName;
     vector.setVisible(false);
+    vector.editable = false;
     map.addLayer(vector);
 
     TETHYS_MAP_VIEW.updateLegend();
