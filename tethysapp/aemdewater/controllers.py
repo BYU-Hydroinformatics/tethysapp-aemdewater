@@ -184,7 +184,6 @@ def generate_water_table(request):
         MakeInhomPolySide(ml, xylist=xylist2, order=5, closed=True)
         MakeInhomPolySide(ml, xylist=xylist1, order=5, closed=True)
 
-
     Constant(ml,wXCoords[0]+500,wYCoords[0]+500,initial,[0])
 
     # Add the wells to the analytic element model
@@ -198,14 +197,10 @@ def generate_water_table(request):
         i = i + 1
         # print len(wYCoords)
 
-    #
-    ml.solve(doIterations=True)
+    ml.solve()
 
-
-
-    contourList = timcontour(ml, xIndex[0], xIndex[1], np.absolute((xIndex[0]-xIndex[1])/cellSide), yIndex[0],
-                             yIndex[1], np.absolute((yIndex[0]-yIndex[1])/cellSide), levels = 10,
-                             newfig = True, returncontours = True)
+    contourList = timcontour(ml, xIndex[0], xIndex[1], 100, yIndex[0],yIndex[1], 100, levels = 10,newfig = True,
+                             returncontours = True)
 
     # Return the contour paths and store them as a list
     contourPaths = []
@@ -233,9 +228,6 @@ def generate_water_table(request):
             i += 1
     except:
         pass
-
-    # print contourPaths
-
 
     # This section constructs the featurecollection polygons defining the water table elevations
     # Cells are defined at the corners, water table elevation is defined at the center of the cell
