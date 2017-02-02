@@ -383,7 +383,6 @@ function addContours(contourLines,levels,titleName){
         });
 
 	var vector = new ol.layer.Image({
-		tethys_legend_title: titleName,
 		zIndex: 4,
 		source: new ol.source.ImageVector({
 			source: vectorSource,
@@ -401,7 +400,7 @@ function addContours(contourLines,levels,titleName){
     }
 
     vector.tethys_legend_title = titleName;
-    vector.editable = false;
+    vector.tethys_editable = false;
     map.addLayer(vector);
 
     TETHYS_MAP_VIEW.updateLegend();
@@ -517,12 +516,12 @@ function addWaterTable(raster_elev,titleName){
             map.removeLayer(map.getLayers().item(i));
     }
     vector.tethys_legend_title = titleName;
-    vector.editable = false;
+    vector.tethys_editable = false;
     map.addLayer(vector);
 
     TETHYS_MAP_VIEW.updateLegend();
 
-    map.getLayers().item(1).setZIndex(4);
+    map.getLayers().item(1).setZIndex(5);
 
     toggle_legend(true,1);
 
@@ -608,7 +607,7 @@ function addDewateredLayer(raster_elev,titleName){
     }
     vector.tethys_legend_title = titleName;
     vector.setVisible(false);
-    vector.editable = false;
+    vector.tethys_editable = false;
     map.addLayer(vector);
 
     TETHYS_MAP_VIEW.updateLegend();
