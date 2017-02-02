@@ -396,7 +396,7 @@ function addContours(contourLines,levels,titleName){
 	//	Deletes the existing layer containing any old contourlines
     map = TETHYS_MAP_VIEW.getMap();
     for (i = 0; i < map.getLayers().getProperties().length ; i ++){
-        if (map.getLayers().item(i).getProperties().tethys_legend_title === titleName)
+        if (map.getLayers().item(i).tethys_legend_title === titleName)
             map.removeLayer(map.getLayers().item(i));
     }
 
