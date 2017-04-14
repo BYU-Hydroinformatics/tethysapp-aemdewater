@@ -26,6 +26,7 @@ function welcome_modal() {
 
 $(document).ready(function(){
     welcome_modal();
+    $('#tethys_pan').find('div:first-child').click();
     document.getElementById("loading").style.display="none";
 });
 

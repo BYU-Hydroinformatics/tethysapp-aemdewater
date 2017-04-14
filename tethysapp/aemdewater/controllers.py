@@ -165,17 +165,17 @@ def generate_water_table(request):
     if(slurry):
         print "Starting slurry simulation"
         # Define Exterior Boundary of Slurry Trench
-        xylist1.append([pXCoords[0]-slurryT/2,pYCoords[0]-slurryT/2])
-        xylist1.append([pXCoords[1]-slurryT/2,pYCoords[1]+slurryT/2])
-        xylist1.append([pXCoords[2]+slurryT/2,pYCoords[2]+slurryT/2])
-        xylist1.append([pXCoords[3]+slurryT/2,pYCoords[3]-slurryT/2])
+        xylist1.append([pXCoords[0]-slurryT,pYCoords[0]-slurryT])
+        xylist1.append([pXCoords[1]-slurryT,pYCoords[1]+slurryT])
+        xylist1.append([pXCoords[2]+slurryT,pYCoords[2]+slurryT])
+        xylist1.append([pXCoords[3]+slurryT,pYCoords[3]-slurryT])
         print xylist1
 
         #Define Interior Boundary of Slurry Trench
-        xylist2.append([pXCoords[0]+slurryT/2,pYCoords[0]+slurryT/2])
-        xylist2.append([pXCoords[1]+slurryT/2,pYCoords[1]-slurryT/2])
-        xylist2.append([pXCoords[2]-slurryT/2,pYCoords[2]-slurryT/2])
-        xylist2.append([pXCoords[3]-slurryT/2,pYCoords[3]+slurryT/2])
+        xylist2.append([pXCoords[0],pYCoords[0]])
+        xylist2.append([pXCoords[1],pYCoords[1]])
+        xylist2.append([pXCoords[2],pYCoords[2]])
+        xylist2.append([pXCoords[3],pYCoords[3]])
         print xylist2
 
         PolygonInhom(ml,k=[k],c=[],zb=[bedrock],zt=[initial],xylist=xylist2)
